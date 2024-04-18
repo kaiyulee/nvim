@@ -7,8 +7,8 @@ return {
 		-- import nvim-treesitter plugin
 		local treesitter = require("nvim-treesitter.configs")
 
-		-- configure treesitter
-		treesitter.setup({ -- enable syntax highlighting
+		local opts = {
+			-- enable syntax highlighting
 			highlight = {
 				enable = true,
 			},
@@ -60,12 +60,12 @@ return {
 					-- Set to false if you have an `updatetime` of ~100.
 					clear_on_cursor_move = true,
 				},
-				highlight_current_scope = { enable = true },
+				highlight_current_scope = { enable = false },
 				smart_rename = {
 					enable = true,
 					-- Assign keymaps to false to disable them, e.g. `smart_rename = false`.
 					keymaps = {
-						smart_rename = "grr",
+						smart_rename = "gR",
 					},
 				},
 				navigation = {
@@ -80,6 +80,9 @@ return {
 					},
 				},
 			},
-		})
+		}
+
+		-- configure treesitter
+		treesitter.setup(opts)
 	end,
 }
