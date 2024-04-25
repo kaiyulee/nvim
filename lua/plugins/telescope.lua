@@ -50,6 +50,11 @@ return {
 					},
 				},
 			},
+			pickers = {
+				oldfiles = {
+					cwd_only = true,
+				},
+			},
 		})
 
 		telescope.load_extension("fzf")
