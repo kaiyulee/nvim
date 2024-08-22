@@ -16,98 +16,10 @@ return {
 			inactive_bg = "#2c3043",
 		}
 
-		local my_lualine_theme = {
-			normal = {
-				a = {
-					bg = colors.blue,
-					fg = colors.bg,
-					gui = "bold",
-				},
-				b = {
-					bg = colors.bg,
-					fg = colors.fg,
-				},
-				c = {
-					bg = colors.bg,
-					fg = colors.fg,
-				},
-			},
-			insert = {
-				a = {
-					bg = colors.green,
-					fg = colors.bg,
-					gui = "bold",
-				},
-				b = {
-					bg = colors.bg,
-					fg = colors.fg,
-				},
-				c = {
-					bg = colors.bg,
-					fg = colors.fg,
-				},
-			},
-			visual = {
-				a = {
-					bg = colors.violet,
-					fg = colors.bg,
-					gui = "bold",
-				},
-				b = {
-					bg = colors.bg,
-					fg = colors.fg,
-				},
-				c = {
-					bg = colors.bg,
-					fg = colors.fg,
-				},
-			},
-			command = {
-				a = {
-					bg = colors.yellow,
-					fg = colors.bg,
-					gui = "bold",
-				},
-				b = {
-					bg = colors.bg,
-					fg = colors.fg,
-				},
-				c = {
-					bg = colors.bg,
-					fg = colors.fg,
-				},
-			},
-			replace = {
-				a = {
-					bg = colors.red,
-					fg = colors.bg,
-					gui = "bold",
-				},
-				b = {
-					bg = colors.bg,
-					fg = colors.fg,
-				},
-				c = {
-					bg = colors.bg,
-					fg = colors.fg,
-				},
-			},
-			inactive = {
-				a = {
-					bg = colors.inactive_bg,
-					fg = colors.semilightgray,
-					gui = "bold",
-				},
-				b = {
-					bg = colors.inactive_bg,
-					fg = colors.semilightgray,
-				},
-				c = {
-					bg = colors.inactive_bg,
-					fg = colors.semilightgray,
-				},
-			},
-		}
+		local function upper_encoding()
+			local enc = vim.bo.fenc or vim.bo.enc or "UTF-8"
+			return enc:upper()
+		end
 
 		-- configure lualine with modified theme
 		lualine.setup({
@@ -123,9 +35,14 @@ return {
 							--[[ fg = "#ff9e64", ]]
 						},
 					},
-					{ "encoding" },
+					{ upper_encoding },
 					{ "fileformat" },
-					{ "filetype" },
+					{
+						"filetype",
+						colored = true,
+						icon_only = true,
+						icon = { align = "right" },
+					},
 				},
 			},
 		})

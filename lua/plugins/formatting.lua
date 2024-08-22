@@ -9,6 +9,7 @@ return {
 				php = { "php_cs_fixer" },
 				javascript = { "prettier" },
 				typescript = { "prettier" },
+				-- vue = { "prettier" },
 				javascriptreact = { "prettier" },
 				typescriptreact = { "prettier" },
 				svelte = { "prettier" },

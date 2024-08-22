@@ -60,5 +60,8 @@ return {
 		keymap.set("n", "<leader>er", "<cmd>NvimTreeRefresh<CR>", {
 			desc = "Refresh file explorer",
 		}) -- refresh file explorer
+		keymap.set("n", "<leader>ea", "<cmd>NvimTreeFocus<CR>", {
+			desc = "Focus on file explorer",
+		}) -- Focus on file explorer
 	end,
 }
