@@ -33,16 +33,6 @@ opt.ruler = false
 -- disable nvim intro
 opt.shortmess:append "sI"
 
--- Auto dark/light mode on macOS via FocusGained + timer fallback
-if vim.fn.has("macunix") == 1 then
-  local function set_bg()
-    local mode = vim.fn.system({ "defaults", "read", "-g", "AppleInterfaceStyle" }):gsub("%s+", "")
-    vim.o.background = mode == "Dark" and "dark" or "light"
-  end
-  vim.api.nvim_create_autocmd("FocusGained", { callback = set_bg })
-  set_bg() -- set on startup
-end
-
 opt.signcolumn = "yes"
 opt.splitbelow = true
 opt.splitright = true
