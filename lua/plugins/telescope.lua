@@ -1,6 +1,6 @@
 return {
 	"nvim-telescope/telescope.nvim",
-	branch = "0.1.x",
+	version = "0.2.*",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		{
@@ -13,40 +13,15 @@ return {
 	config = function()
 		local telescope = require("telescope")
 		local actions = require("telescope.actions")
-		local previewers = require("telescope.previewers")
-		local transform_mod = require("telescope.actions.mt").transform_mod
-
-		local trouble = require("trouble")
-		local trouble_telescope = require("trouble.sources.telescope")
-
-		-- or create your custom action
-		local custom_actions = transform_mod({
-			open_trouble_qflist = function(prompt_bufnr)
-				trouble.toggle("quickfix")
-			end,
-		})
-
-		local new_maker = function(filepath, bufnr, opts)
-			if filepath then
-				local size = vim.fn.getfsize(filepath)
-				if size > 0 then
-					-- Parameters are roughly equal to a maximum file size of 10 MB
-					if size < 500000 then
-						return previewers.buffer_previewer_maker(filepath, bufnr, opts)
-					end
-				end
-			end
-		end
 
 		telescope.setup({
 			defaults = {
 				path_display = { "smart" },
 				mappings = {
 					i = {
-						["<C-k>"] = actions.move_selection_previous, -- move to prev result
-						["<C-j>"] = actions.move_selection_next, -- move to next result
-						["<C-q>"] = actions.send_selected_to_qflist + custom_actions.open_trouble_qflist,
-						["<C-t>"] = trouble_telescope.open,
+						["<C-k>"] = actions.move_selection_previous,
+						["<C-j>"] = actions.move_selection_next,
+						["<C-q>"] = actions.send_selected_to_qflist,
 					},
 				},
 			},
@@ -58,9 +33,7 @@ return {
 		})
 
 		telescope.load_extension("fzf")
-		telescope.load_extension("refactoring")
-
-		-- set keymaps
+	-- set keymaps
 		local keymap = vim.keymap -- for conciseness
 
 		keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>", {
@@ -83,9 +56,5 @@ return {
 			desc = "Find symbols",
 		})
 
-		-- for refactoring
-		vim.keymap.set({ "n", "x" }, "<leader>rr", function()
-			require("telescope").extensions.refactoring.refactors()
-		end)
 	end,
 }

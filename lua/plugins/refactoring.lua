@@ -3,6 +3,7 @@ return {
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		"nvim-treesitter/nvim-treesitter",
+		"lewis6991/async.nvim",
 	},
 	config = function()
 		vim.keymap.set("x", "<leader>re", ":Refactor extract ")

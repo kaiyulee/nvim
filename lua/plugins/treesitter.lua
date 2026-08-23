@@ -2,25 +2,14 @@ return {
 	"nvim-treesitter/nvim-treesitter",
 	event = { "BufReadPre", "BufNewFile" },
 	build = ":TSUpdate",
-	dependencies = { "windwp/nvim-ts-autotag" },
+	dependencies = {
+		"windwp/nvim-ts-autotag",
+		"nvim-treesitter/nvim-treesitter-textobjects",
+	},
 	config = function()
-		-- import nvim-treesitter plugin
-		local treesitter = require("nvim-treesitter.configs")
-
-		local opts = {
-			-- enable syntax highlighting
-			highlight = {
-				enable = true,
-			},
-			-- enable indentation
-			indent = {
-				enable = true,
-			},
-			-- enable autotagging (w/ nvim-ts-autotag plugin)
-			autotag = {
-				enable = true,
-			},
-			-- ensure these language parsers are installed
+		require("nvim-treesitter").setup({
+			highlight = { enable = true },
+			indent = { enable = true },
 			ensure_installed = {
 				"json",
 				"javascript",
@@ -55,35 +44,30 @@ return {
 					node_decremental = "<bs>",
 				},
 			},
-			refactor = {
-				highlight_definitions = {
+			textobjects = {
+				select = {
 					enable = true,
-					-- Set to false if you have an `updatetime` of ~100.
-					clear_on_cursor_move = true,
-				},
-				highlight_current_scope = { enable = false },
-				smart_rename = {
-					enable = true,
-					-- Assign keymaps to false to disable them, e.g. `smart_rename = false`.
+					lookahead = true,
 					keymaps = {
-						smart_rename = "gR",
+						["af"] = "@function.outer",
+						["if"] = "@function.inner",
+						["ac"] = "@class.outer",
+						["ic"] = "@class.inner",
 					},
 				},
-				navigation = {
+				move = {
 					enable = true,
-					-- Assign keymaps to false to disable them, e.g. `goto_definition = false`.
-					keymaps = {
-						goto_definition = "gnd",
-						list_definitions = "gnD",
-						list_definitions_toc = "gO",
-						goto_next_usage = "<a-*>",
-						goto_previous_usage = "<a-#>",
+					set_jumps = true,
+					goto_next_start = {
+						["]f"] = "@function.outer",
+						["]c"] = "@class.outer",
+					},
+					goto_previous_start = {
+						["[f"] = "@function.outer",
+						["[c"] = "@class.outer",
 					},
 				},
 			},
-		}
-
-		-- configure treesitter
-		treesitter.setup(opts)
+		})
 	end,
 }

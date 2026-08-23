@@ -4,60 +4,56 @@ return {
 	priority = 1000,
 	config = function()
 		require("catppuccin").setup({
-			flavour = "auto", -- latte, frappe, macchiato, mocha
-			-- flavour = "auto" -- will respect terminal's background
-			background = { -- :h background
-				light = "latte",
-				dark = "mocha",
-			},
-			transparent_background = true, -- disables setting the background color.
-			show_end_of_buffer = false, -- shows the '~' characters after the end of buffers
-			term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
-			dim_inactive = {
-				enabled = false, -- dims the background color of inactive window
-				shade = "dark",
-				percentage = 0.15, -- percentage of the shade to apply to the inactive window
-			},
-			no_italic = false, -- Force no italic
-			no_bold = false, -- Force no bold
-			no_underline = false, -- Force no underline
-			styles = { -- Handles the styles of general hi groups (see `:h highlight-args`):
-				comments = { "bold" }, -- Change the style of comments
-				conditionals = { "italic" },
-				loops = {},
-				functions = {},
-				keywords = {},
-				strings = {},
-				variables = {},
-				numbers = {},
-				booleans = {},
-				properties = {},
-				types = {},
-				operators = {},
-				-- miscs = {}, -- Uncomment to turn off hard-coded styles
-			},
-			color_overrides = {},
-			custom_highlights = {},
-			default_integrations = true,
 			integrations = {
-				cmp = true,
-				gitsigns = true,
-				nvimtree = true,
-				treesitter = true,
-				notify = false,
-				mini = {
-					enabled = true,
-					indentscope_color = "",
-				},
-				mason = true,
-				lsp_trouble = true,
-				which_key = true,
-				alpha = true,
-				-- For more plugins integrations please scroll down (https://github.com/catppuccin/nvim#integrations)
+				snacks = { enabled = true }, -- disabled by default
+				nvim_surround = true, -- disabled by default
 			},
 		})
 
-		-- setup must be called before loading
-		vim.cmd.colorscheme("catppuccin")
+		-- Auto dark/light mode on macOS with polling fallback for better Warp compatibility
+		if vim.fn.has("macunix") == 1 then
+			local function set_bg()
+				local mode = vim.fn.system({ "defaults", "read", "-g", "AppleInterfaceStyle" }):gsub("%s+", "")
+				vim.o.background = mode == "Dark" and "dark" or "light"
+			end
+
+			-- Check on FocusGained event
+			vim.api.nvim_create_autocmd("FocusGained", { callback = set_bg })
+
+			-- Add a timer-based polling as fallback (checks every 2 seconds)
+			-- This helps with terminal emulators like Warp that don't immediately trigger FocusGained
+			local timer = nil
+			local last_mode = nil
+
+			local function poll_theme()
+				local mode = vim.fn.system({ "defaults", "read", "-g", "AppleInterfaceStyle" }):gsub("%s+", "")
+				if mode ~= last_mode then
+					last_mode = mode
+					vim.o.background = mode == "Dark" and "dark" or "light"
+				end
+			end
+
+			-- Start timer on VimEnter to begin polling
+			vim.api.nvim_create_autocmd("VimEnter", {
+				callback = function()
+					poll_theme()
+					if timer == nil then
+						timer = vim.loop.new_timer()
+						timer:start(2000, 2000, vim.schedule_wrap(poll_theme))
+					end
+				end,
+			})
+
+			-- Cleanup timer on exit
+			vim.api.nvim_create_autocmd("VimLeavePre", {
+				callback = function()
+					if timer then
+						timer:stop()
+						timer:close()
+					end
+				end,
+			})
+		end
+		vim.cmd.colorscheme("catppuccin-nvim")
 	end,
 }

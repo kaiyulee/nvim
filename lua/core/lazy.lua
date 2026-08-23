@@ -28,6 +28,9 @@ require("lazy").setup(
     },
     change_detection = {
       notify = false
-    }
+    },
+    git = {
+      url_format = "git@github.com:%s.git",
+    },
   }
 )
